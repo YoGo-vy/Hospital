@@ -1,0 +1,49 @@
+.el-button {
+    padding: 8px;
+}
+
+.el-message {
+    padding: 10px;
+}
+
+.el-loading-mask {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.ht-message-box {
+    border: none;
+}
+
+.ht-message-box .el-message-box__headerbtn {
+    top: 10px;
+}
+
+.ht-message-box .el-message-box__header {
+    background: #409eff;
+    padding: 10px 15px;
+}
+
+.ht-message-box .el-message-box__title {
+    font-size: 16px;
+}
+
+.ht-dialog .el-dialog__header {
+    padding: 6px 15px;
+    background: #409eff;
+}
+
+.ht-dialog .el-dialog__headerbtn {
+    top: 10px
+}
+
+.ht-dialog .el-dialog__title {
+    font-size: 16px
+}
+
+.ht-dialog .el-dialog__body {
+    padding: 10px;
+}
+
+.ht-dialog .el-icon-close {
+    color: white;
+}
