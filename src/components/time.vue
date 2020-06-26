@@ -1,11 +1,16 @@
 <template>
   <div class="hospital-time">
-    <div class="date">
-      <span>{{ date }}</span>
+    <div class="time-icon">
+      <i class="el-icon-time"></i>
     </div>
-    <div class="day-hour">
-      <span>{{ day }}</span>
-      <span class="hour">{{ hour }}</span>
+    <div class="time-container">
+      <div class="date">
+        <span>{{ day }}</span>
+        <span class="hour">{{ hour }}</span>
+      </div>
+      <div class="day-hour">
+        <span>{{ date }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -14,7 +19,7 @@
 export default {
   data() {
     return {
-      date: '2020年05月31日',
+      date: '2020-06-07',
       hour: '12:00',
       day: '星期日',
     }
@@ -32,19 +37,32 @@ export default {
 .hospital-time {
   height: 100%;
   width: 100%;
-  font-size: 0.24rem;
   text-align: center;
-  .date {
-    height: 0.44rem;
-    line-height: 0.44rem;
+  .time-icon {
+    font-size: 0.6rem;
+    float: left;
+    color: #00cc99;
   }
-  .day-hour {
-    height: 0.56rem;
-    line-height: 0.56rem;
-    .hour {
+  .time-container {
+    float: right;
+    text-align: left;
+    width: calc(100% - 0.78rem);
+    .date {
+      height: 0.44rem;
+      line-height: 0.6rem;
       font-size: 0.26rem;
-      font-weight: bold;
-      margin-left: 0.2rem;
+    }
+    .day-hour {
+      height: 0.56rem;
+      line-height: 0.46rem;
+      font-size: 0.3rem;
+      color: #00cc99;
+      font-size: 0.36rem;
+      .hour {
+        font-size: 0.26rem;
+        font-weight: bold;
+        margin-left: 0.2rem;
+      }
     }
   }
 }

@@ -43,12 +43,10 @@ export default {
   width: 100%;
   flex: 1;
   font-size: 0.3rem;
-  border-bottom: 1px solid;
   .x-list-label {
     display: inline-block;
     width: 2.6rem;
     height: 100%;
-    border-right: 1px solid;
     span {
       height: 100%;
       width: 100%;

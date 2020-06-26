@@ -32,7 +32,12 @@ export default {
         {
           path: '/Holl',
           isDisable: false, //是否可点击
-          label: '大厅',
+          label: '病人分类',
+        },
+        {
+          path: '/Room',
+          isDisable: false, //是否可点击
+          label: '诊室',
         },
       ],
     }
@@ -68,7 +73,7 @@ export default {
   color: #a3b4ad;
   display: grid;
   text-align: center;
-  grid-template-columns:  100px 100px 100px 100px 100px;
+  grid-template-columns: 100px 100px 100px 100px 100px;
   grid-template-rows: 60px;
 }
 

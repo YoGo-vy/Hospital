@@ -43,14 +43,12 @@ export default {
   width: 100%;
   flex: 1;
   font-size: 0.3rem;
-  border-bottom: 1px solid;
   .x-list-label {
     float: left;
     width: 2.6rem;
     height: 100%;
     text-align: right;
     line-height: 1.09rem;
-    border-right: 1px solid;
     span {
       margin-right: 0.2rem;
     }

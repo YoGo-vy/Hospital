@@ -2,6 +2,7 @@
 import VueRouter from 'vue-router'
 import UIDemo from '@/views/UIDemo'
 import Holl from '@/views/Holl'
+import Room from '@/views/Room'
 
 const routes = [
   {
@@ -11,6 +12,10 @@ const routes = [
   {
     path: '/Holl',
     component: Holl,
+  },
+  {
+    path: '/Room',
+    component: Room,
   },
 ]
 
