@@ -16,20 +16,34 @@
 </template>
 
 <script>
+import { day } from '@/constant/time.js'
+
+const pad00 = (str) => String(str).padStart(2, '0')
+
 export default {
   data() {
     return {
       date: '2020-06-07',
       hour: '12:00',
       day: '星期日',
+      timer: -1,
     }
   },
   created() {
-    // this.timer = setInterval(() => {
-    //   const date = new Date() // 获取当地时间
-    // }, 1000)
+    this._updateTime()
+    this.timer = window.setInterval(() => this._updateTime(), 1000 * 10) // 30s刷新一次
   },
-  beforeDestroy() {},
+  methods: {
+    _updateTime() {
+      const date = new Date() // 获取当地时间
+      this.day = day[date.getDay()]
+      this.date = `${date.getFullYear()}-${pad00(date.getMonth() + 1)}-${pad00(date.getDate())}`
+      this.hour = `${pad00(date.getHours())}:${pad00(date.getMinutes())}`
+    },
+  },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
+  },
 }
 </script>
 

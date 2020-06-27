@@ -1,16 +1,14 @@
 <template>
   <!-- 一行 -->
   <div class="y-list">
-    <!-- 病人类型 -->
-    <div class="y-list-label">
-      <span>{{ showLabel }}</span>
-    </div>
-    <!-- 病人,能左右滚动 -->
-    <div class="y-list-content">
-      <div v-for="person in persons" :key="person.id" class="person">
-        <span>{{ person.name }}</span>
+    <div class="y-list-icon center">
+      <div class="img-border">
+        <div style="text-align: center;">
+          <img src="hospital/static/imgs/icon_zhen.png" alt />
+        </div>
       </div>
     </div>
+    <div class="right"></div>
   </div>
 </template>
 <script>
@@ -22,49 +20,46 @@ export default {
         return []
       },
     },
-    label: {
-      type: String,
-      default: '类型名称',
-    },
   },
   data() {
     return {}
   },
-  computed: {
-    showLabel() {
-      return `${this.label}(${this.persons.length}人)`
-    },
-  },
+  computed: {},
   created() {},
 }
 </script>
 <style lang="less">
 .y-list {
   width: 100%;
-  height: 50%;
+  height: calc(33% - 0.3rem);
   font-size: 0.3rem;
-  .y-list-label {
-    float: left;
-    width: 2.6rem;
-    height: 100%;
-    text-align: right;
-    line-height: 2.9rem;
-    span {
-      margin-right: 0.2rem;
+  background: white;
+  margin-top: 0.3rem;
+  padding-left: 0.6rem;
+  border-radius: 0.3rem;
+  position: relative;
+  .y-list-icon {
+    width: 1.2rem;
+    margin-left: -1.2rem;
+    .img-border {
+      width: 1.2rem;
+      height: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: rgb(2, 193, 140);
+      border-radius: 50%;
+      img {
+        width: 1rem;
+      }
     }
   }
-  .y-list-content {
-    width: calc(100% - 2.7rem);
-    // white-space: nowrap;
+  .right {
+    background: yellowgreen;
     height: 100%;
-    float: right;
-    overflow: hidden;
-    .person {
-      display: inline-block;
-      width: 2rem;
-      line-height: 0.96rem;
-      text-align: center;
-    }
+    width: calc(100% - 0.9rem);
+    position: absolute;
+    top: 0;
   }
 }
 </style>

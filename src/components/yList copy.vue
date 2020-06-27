@@ -1,12 +1,12 @@
 <template>
   <!-- 一行 -->
-  <div class="x-list">
+  <div class="y-list">
     <!-- 病人类型 -->
-    <div class="x-list-label">
+    <div class="y-list-label">
       <span>{{ showLabel }}</span>
     </div>
     <!-- 病人,能左右滚动 -->
-    <div class="x-list-content">
+    <div class="y-list-content">
       <div v-for="person in persons" :key="person.id" class="person">
         <span>{{ person.name }}</span>
       </div>
@@ -39,29 +39,30 @@ export default {
 }
 </script>
 <style lang="less">
-.x-list {
+.y-list {
   width: 100%;
-  flex: 1;
+  height: 50%;
   font-size: 0.3rem;
-  .x-list-label {
-    display: inline-block;
+  .y-list-label {
+    float: left;
     width: 2.6rem;
     height: 100%;
+    text-align: right;
+    line-height: 2.9rem;
     span {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
+      margin-right: 0.2rem;
     }
   }
-  .x-list-content {
-    display: inline-block;
+  .y-list-content {
     width: calc(100% - 2.7rem);
-    white-space: nowrap;
+    // white-space: nowrap;
+    height: 100%;
+    float: right;
     overflow: hidden;
     .person {
       display: inline-block;
       width: 2rem;
+      line-height: 0.96rem;
       text-align: center;
     }
   }

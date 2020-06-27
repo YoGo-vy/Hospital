@@ -1,5 +1,5 @@
 <template>
-  <div class="holl-top">
+  <div class="holl-top" :style="heightStyle">
     <div class="icon">
       <img src="hospital/static/imgs/logo.jpg" alt />
       <div class="trangle"></div>
@@ -23,6 +23,16 @@
 import HtTime from '@/components/time'
 
 export default {
+  props: {
+    heightStyle: {
+      type: Object,
+      default() {
+        return {
+          height: '1.6rem',
+        }
+      },
+    },
+  },
   components: {
     HtTime,
   },
@@ -35,7 +45,7 @@ export default {
 <style lang="less">
 .holl-top {
   width: 100%;
-  height: 1.5rem;
+  height: 1.6rem;
   display: flex;
   justify-content: space-between;
   .icon,
@@ -49,13 +59,13 @@ export default {
     float: left;
     width: 3rem;
     img {
-      height: 1rem;
+      height: 1.2rem;
     }
     .trangle {
       width: 0;
       height: 0;
-      border-left: 0.625rem solid transparent;
-      border-right: 0.625rem solid transparent;
+      border-left: 0.75rem solid transparent;
+      border-right: 0.75rem solid transparent;
       border-top: 0.16rem solid white;
     }
   }
