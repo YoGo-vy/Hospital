@@ -1,5 +1,4 @@
 <template>
-  <!-- 一行 -->
   <div class="y-list">
     <div class="y-list-icon center">
       <div class="img-border">
@@ -8,7 +7,20 @@
         </div>
       </div>
     </div>
-    <div class="right"></div>
+    <div class="right center">
+      <div>
+        <div class="room-name">
+          <span>{{ label }}</span>
+          <span class="number">[{{ `${persons.length}` }}人]</span>
+        </div>
+        <div class="room-persons">
+          <div v-for="person in persons" :key="person.id" class="person">
+            <span>{{ person.number }}</span>
+            <span>{{ person.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -19,6 +31,10 @@ export default {
       default() {
         return []
       },
+    },
+    label: {
+      type: String,
+      default: '急诊1诊室',
     },
   },
   data() {
@@ -33,7 +49,7 @@ export default {
   width: 100%;
   height: calc(33% - 0.3rem);
   font-size: 0.3rem;
-  background: white;
+  background: rgba(255, 255, 255, 0.81);
   margin-top: 0.3rem;
   padding-left: 0.6rem;
   border-radius: 0.3rem;
@@ -55,11 +71,25 @@ export default {
     }
   }
   .right {
-    background: yellowgreen;
-    height: 100%;
-    width: calc(100% - 0.9rem);
+    width: calc(100% - 1.3rem);
     position: absolute;
     top: 0;
+    padding-left: 0.4rem;
+    .room-name {
+      font-size: 0.4rem;
+      margin-bottom: 0.05rem;
+      color: #3bcc81;
+      .number {
+        color: #ff7271;
+      }
+    }
+    .room-persons {
+      font-size: 0.32rem;
+      .person {
+        display: inline-block;
+        width: 1.8rem;
+      }
+    }
   }
 }
 </style>

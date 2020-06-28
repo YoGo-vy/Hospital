@@ -34,9 +34,9 @@ export default {
           ref: 'room1',
           label: '急诊1诊室',
           persons: [
-            { number: 'R1', id: 1, name: '张三1' },
+            { number: 'R1', id: 1, name: '张三' },
             { number: 'R2', id: 2, name: '张三2' },
-            { number: 'R3', id: 3, name: '张三3' },
+            { number: 'R3', id: 3, name: '张三四' },
             { number: 'R4', id: 4, name: '张三4' },
             { number: 'R5', id: 5, name: '张三5' },
             { number: 'R6', id: 6, name: '张三6' },
