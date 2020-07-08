@@ -6,9 +6,9 @@
     </div>
     <div class="title">
       <span class="line"></span>
-      <span>急症诊室</span>
+      <span>{{ name }}</span>
       <span class="line"></span>
-      <div class="emegency-room">
+      <div class="emegency-room" v-if="isHadEmegency">
         <div class="left-trangle"></div>
         <span>Emergency Room</span>
         <div class="right-trangle"></div>
@@ -31,6 +31,14 @@ export default {
           height: '1.6rem',
         }
       },
+    },
+    name: {
+      type: String,
+      default: '急症诊室',
+    },
+    isHadEmegency: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {

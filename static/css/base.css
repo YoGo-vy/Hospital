@@ -174,3 +174,14 @@ input[type='number'] + div > .count_subtract {
   justify-content: center;
   height: 100%;
 }
+.xy-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}

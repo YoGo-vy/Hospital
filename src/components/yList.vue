@@ -2,9 +2,7 @@
   <div class="y-list">
     <div class="y-list-icon center">
       <div class="img-border">
-        <div style="text-align: center;">
-          <img src="hospital/static/imgs/icon_zhen.png" alt />
-        </div>
+        <img src="hospital/static/imgs/icon_zhen.png" alt />
       </div>
     </div>
     <div class="right center">
@@ -60,9 +58,11 @@ export default {
     .img-border {
       width: 1.2rem;
       height: 1.2rem;
+
       display: flex;
-      flex-direction: column;
       justify-content: center;
+      align-items: center;
+
       background: rgb(2, 193, 140);
       border-radius: 50%;
       img {
