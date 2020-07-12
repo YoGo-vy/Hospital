@@ -3,18 +3,17 @@
     <div class="nurse">
       <div class="body">
         <div class="top">
-          <div class="left">
-            <span>1号诊室 : </span>
-            <span class="red">50</span>
-            <span>人</span>
-          </div>
-          <div class="right">
-            <span>2号诊室 : </span>
-            <span class="red">61</span>
-            <span>人</span>
-          </div>
+          <el-select v-model="currentRoomId" placeholder="请选择">
+            <el-option v-for="item in rooms" :key="item.roomId" :label="getLabel(item)" :value="item.roomId"> </el-option>
+          </el-select>
         </div>
-        <div class="mid"></div>
+        <div class="mid">
+          <el-table v-if="currentRoom && currentRoom.patients" ref="multipleTable" :data="currentRoom.patients" tooltip-effect="dark" style="width: 100%;" @selection-change="onSelectionChange">
+            <el-table-column type="selection" width="55" />
+            <el-table-column label="序号" prop="number" />
+            <el-table-column prop="patientName" label="姓名" />
+          </el-table>
+        </div>
         <div class="bottom1">
           <el-button class="small-btn" v-for="button in buttons" :key="button.eventKey" :eventKey="button.eventKey" size="small" @click="onClickBtn(button)">
             {{ button.label }}
@@ -40,9 +39,38 @@ export default {
         { disabled: false, isChecked: false, label: '删除', eventKey: 'onDelete' },
         { disabled: false, isChecked: false, label: '转诊', eventKey: 'onMove' },
       ],
+      timer: -1,
+      rooms: [],
+      currentRoomId: 1,
     }
   },
+  created() {
+    this.initData()
+    this.timer = setInterval(() => this.initData(), 10 * 1000)
+  },
+  computed: {
+    currentRoom() {
+      return this.rooms.find(({ roomId }) => roomId === this.currentRoomId)
+    },
+  },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
+  },
   methods: {
+    async initData() {
+      const data = await this.$api.getRooms()
+      data.rooms.forEach((room) => {
+        room.patients.forEach((patient, index) => (patient.number = index + 1))
+      })
+      this.rooms = data.rooms
+    },
+    getLabel(item) {
+      // option label
+      return `${item.roomName}(${item.patients.length}人)`
+    },
+    onSelectionChange() {
+      // CheckBox change
+    },
     onOK() {},
     onCancel() {},
     onClickBtn(button) {
@@ -95,7 +123,8 @@ export default {
         }
       }
       .mid {
-        height: calc(100% - 1.2rem);
+        height: calc(100% - 1.3rem);
+        margin-top: 0.1rem;
       }
       .bottom1 {
         width: 100%;
@@ -111,7 +140,7 @@ export default {
           border: none;
           margin-right: 0.75rem;
         }
-        .gray{
+        .gray {
           background: rgb(220, 215, 219);
           border: none;
         }

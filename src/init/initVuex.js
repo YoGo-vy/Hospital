@@ -4,7 +4,7 @@ export default function initVuex(Vue) {
   Vue.use(Vuex)
   const store = new Vuex.Store({
     state: {
-      path: 'Room',
+      path: 'Holl',
     },
     mutations: {
       changePath(state, path) {

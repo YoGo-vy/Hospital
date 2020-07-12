@@ -23,7 +23,7 @@ export default {
   },
   computed: mapState(['path']),
   created() {
-    this.$store.commit('changePath', 'Holl')
+    // this.$store.commit('changePath', 'Holl')
   },
   methods: {},
   beforeDestroy() {},
