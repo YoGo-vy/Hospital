@@ -8,13 +8,13 @@
     <div class="right center">
       <div>
         <div class="room-name">
-          <span>{{ label }}</span>
-          <span class="number">[{{ `${persons.length}` }}人]</span>
+          <span>{{ roomName }}</span>
+          <span class="number">[{{ `${patients.length}` }}人]</span>
         </div>
-        <div class="room-persons">
-          <div v-for="person in persons" :key="person.id" class="person">
-            <span>{{ person.number }}</span>
-            <span>{{ person.name }}</span>
+        <div class="room-patients">
+          <div v-for="(person, pNumber) in patients" :key="person.patientId" class="person">
+            <span>{{ pNumber + 1 }}</span>
+            <span>{{ person.patientName }}</span>
           </div>
         </div>
       </div>
@@ -24,13 +24,13 @@
 <script>
 export default {
   props: {
-    persons: {
+    patients: {
       type: Array,
       default() {
         return []
       },
     },
-    label: {
+    roomName: {
       type: String,
       default: '急诊1诊室',
     },
@@ -83,7 +83,7 @@ export default {
         color: #ff7271;
       }
     }
-    .room-persons {
+    .room-patients {
       font-size: 0.32rem;
       .person {
         display: inline-block;

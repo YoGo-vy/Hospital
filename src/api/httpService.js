@@ -57,14 +57,14 @@ instance.interceptors.response.use(
         // 这里可以统一对data进行处理
 
         // 若不是正确的返回code，且已经登录，就抛出错误
-        if (data.code !== '1') {
-            SimpleUI.error(data.msg || '接口请求错误') // 如果需要的话可以统一的错误提示
+        // if (data.code !== '1') {
+        //     SimpleUI.error(data.msg || '接口请求错误') // 如果需要的话可以统一的错误提示
 
-            const err = new Error(data.description)
-            err.data = data
-            err.response = response
-            throw err
-        }
+        //     const err = new Error(data.description)
+        //     err.data = data
+        //     err.response = response
+        //     throw err
+        // }
         return data
     },
     err => {

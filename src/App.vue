@@ -11,13 +11,27 @@
 
 <script>
 import Top from '@/views/Top.vue'
+import { mapState } from 'vuex'
 
 export default {
   name: 'app',
   components: {
     Top,
   },
-  created() {},
+  data() {
+    return {}
+  },
+  computed: mapState(['path']),
+  created() {
+    this.$store.commit('changePath', 'Holl')
+  },
+  methods: {},
+  beforeDestroy() {},
+  watch: {
+    path(val) {
+      this.$router.push(val)
+    },
+  },
 }
 </script>
 
@@ -25,7 +39,7 @@ export default {
 #app {
   height: 100%;
   font-family: 'Microsoft Yahei', sans-serif;
-  background-image: linear-gradient(to right, #00c18c 0%,#40c286 57%, #edfd92 100%);
+  background-image: linear-gradient(to right, #00c18c 0%, #40c286 57%, #edfd92 100%);
 }
 .mid-content {
   width: 100%;

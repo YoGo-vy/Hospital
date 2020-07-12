@@ -2,25 +2,25 @@
   <!-- 一行 -->
   <div class="x-list">
     <div class="x-list-icon">
-      <img :src="iconMap[type]" alt />
+      <img :src="iconMap[levelName]" alt />
     </div>
     <div class="x-list-label">
       <div>
         <div class="label-type">
-          {{ labelMap[type] }}
+          {{ levelName }}
         </div>
-        <div class="label-number">{{ persons.length }}人</div>
+        <div class="label-number">{{ patients.length }}人</div>
       </div>
     </div>
     <div class="x-list-split">
       <div class="split-line" :style="{ background: splitColors[colorIndex] }"></div>
     </div>
     <div class="x-list-person">
-      <div class="person-one" v-for="person in persons" :key="person.id">
+      <div class="person-one" v-for="(person, pNumber) in patients" :key="person.patientId">
         <div class="center">
           <div>
-            <span>{{ person.number }}</span>
-            <span>{{ person.name }}</span>
+            <span>{{ pNumber + 1 }}</span>
+            <span>{{ person.patientName }}</span>
           </div>
         </div>
       </div>
@@ -28,19 +28,19 @@
   </div>
 </template>
 <script>
-import { iconMap, labelMap, splitColors } from '@/constant/xList.js'
+import { iconMap, splitColors } from '@/constant/xList.js'
 
 export default {
   props: {
-    persons: {
+    patients: {
       type: Array,
       default() {
         return []
       },
     },
-    type: {
+    levelName: {
       type: String,
-      default: 'missed',
+      default: '军属',
     },
     colorIndex: {
       type: Number,
@@ -50,7 +50,6 @@ export default {
   data() {
     return {
       iconMap,
-      labelMap,
       splitColors,
     }
   },

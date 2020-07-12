@@ -1,6 +1,5 @@
 var path = require('path') //使用Node自带的文件路径插件
 module.exports = {
-
   // 生产环境配置
   build: {
     env: require('./prod.env'),
@@ -9,7 +8,7 @@ module.exports = {
     assetsSubDirectory: 'static', // 编译输出的二级目录
     assetsPublicPath: '/', // 编译发布上线路径的根目录，可配置为资源服务器域名或 CDN 域名
     productionSourceMap: true, //生成用于生产构建的源映射
-    devtool:'#source-map',
+    devtool: '#source-map',
 
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -22,7 +21,7 @@ module.exports = {
     // View the bundle analyzer report after build finishes:
     // `npm run build --report`
     // Set to `true` or `false` to always turn it on or off
-    bundleAnalyzerReport: process.env.npm_config_report //一个实用工具,用于分析项目的依赖关系https://www.npmjs.com/package/webpack-bundle-analyzer
+    bundleAnalyzerReport: process.env.npm_config_report, //一个实用工具,用于分析项目的依赖关系https://www.npmjs.com/package/webpack-bundle-analyzer
   },
 
   // 开发环境
@@ -40,6 +39,15 @@ module.exports = {
     devtool: 'cheap-module-eval-source-map',
     cacheBusting: true,
     cssSourceMap: true,
-  }
-
+    proxyTable: {
+      '/api': {
+        target: 'https://patientlist.7sugou.cn', //开发环境
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+  },
 }

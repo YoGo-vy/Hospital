@@ -26,16 +26,19 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     rules: utils.styleLoaders({
       sourceMap: config.dev.cssSourceMap,
       // usePostCSS: true,
-    })
+    }),
   },
   devtool: config.dev.devtool,
   devServer: {
     clientLogLevel: 'warning',
+    proxy: config.dev.proxyTable,
     historyApiFallback: {
-      rewrites: [{
-        from: /.*/,
-        to: path.posix.join(config.dev.assetsPublicPath, 'index.html')
-      }]
+      rewrites: [
+        {
+          from: /.*/,
+          to: path.posix.join(config.dev.assetsPublicPath, 'index.html'),
+        },
+      ],
     },
     hot: true,
     contentBase: false,
@@ -43,20 +46,22 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     host: HOST || config.dev.host,
     port: PORT || config.dev.port,
     open: config.dev.autoOpenBrowser,
-    overlay: config.dev.errorOverlay ? {
-      warnings: false,
-      errors: true
-    } : false,
+    overlay: config.dev.errorOverlay
+      ? {
+          warnings: false,
+          errors: true,
+        }
+      : false,
     publicPath: config.dev.assetsPublicPath,
     quiet: true,
     watchOptions: {
-      poll: config.dev.poll
-    }
+      poll: config.dev.poll,
+    },
   },
   plugins: [
     // definePlugin 接收字符串插入到代码当中, 需要的话可以写上 JS 的字符串
     new webpack.DefinePlugin({
-      'process.env': config.dev.env
+      'process.env': config.dev.env,
     }),
 
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
@@ -73,14 +78,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
-      inject: true
+      inject: true,
     }),
-    new CopyWebpackPlugin([{
-      from: path.resolve(__dirname, '../static'),
-      to: config.dev.assetsSubDirectory,
-      ignore: ['.*']
-    }]),
-  ]
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static'),
+        to: config.dev.assetsSubDirectory,
+        ignore: ['.*'],
+      },
+    ]),
+  ],
 })
 
 module.exports = new Promise((resolve, reject) => {
@@ -94,7 +101,7 @@ module.exports = new Promise((resolve, reject) => {
       devWebpackConfig.plugins.push(
         new FriendlyErrorsPlugin({
           compilationSuccessInfo: {
-            messages: [`Your application is running here:http://${devWebpackConfig.devServer.host}:${port}${config.dev.assetsPublicPath}`]
+            messages: [`Your application is running here:http://${devWebpackConfig.devServer.host}:${port}${config.dev.assetsPublicPath}`],
           },
           onErrors: config.dev.notifyOnErrors ? utils.createNotifierCallback() : undefined,
         })

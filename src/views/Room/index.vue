@@ -6,7 +6,7 @@
         <div class="holl-room">
           <notice />
           <div class="rooms">
-            <y-list v-for="room in rooms" :key="room.ref" v-bind="room"></y-list>
+            <y-list v-for="(room, index) in currentData" :key="index" v-bind="room"></y-list>
           </div>
         </div>
         <my-bottom />
@@ -16,6 +16,9 @@
 </template>
 <script>
 // 大厅
+import chunk from 'lodash/chunk'
+import { CHANGE_TIME } from '@/constant/time.js'
+
 import yList from '@/components/yList'
 import myHeader from '@/components/header'
 import myBottom from '@/components/bottom'
@@ -29,48 +32,36 @@ export default {
   },
   data() {
     return {
-      rooms: [
-        {
-          ref: 'room1',
-          label: '急诊1诊室',
-          persons: [
-            { number: 'R1', id: 1, name: '张三' },
-            { number: 'R2', id: 2, name: '张三2' },
-            { number: 'R3', id: 3, name: '张三四' },
-            { number: 'R4', id: 4, name: '张三4' },
-            { number: 'R5', id: 5, name: '张三5' },
-            { number: 'R6', id: 6, name: '张三6' },
-            { number: 'R7', id: 7, name: '张三7' },
-            { number: 'R8', id: 8, name: '张三8' },
-          ],
-        },
-        {
-          ref: 'room2',
-          label: '急诊2诊室',
-          persons: [
-            { number: 'R1', id: 1, name: '张三1' },
-            { number: 'R2', id: 2, name: '张三2' },
-            { number: 'R3', id: 3, name: '张三3' },
-            { number: 'R4', id: 4, name: '张三4' },
-            { number: 'R5', id: 5, name: '张三5' },
-            { number: 'R6', id: 6, name: '张三6' },
-          ],
-        },
-        {
-          ref: 'room3',
-          label: '急诊3诊室',
-          persons: [
-            { number: 'R1', id: 1, name: '张三1' },
-            { number: 'R2', id: 2, name: '张三2' },
-            { number: 'R3', id: 3, name: '张三3' },
-            { number: 'R4', id: 4, name: '张三4' },
-          ],
-        },
-      ],
+      chunkData: [],
+      pageNumber: 0, // 0 和 1切换
     }
   },
-  methods: {},
-  created() {},
+  activated() {
+    this.pageNumber = 0
+    this.initData()
+  },
+  created() {
+    this.initData()
+  },
+  computed: {
+    currentData() {
+      return this.chunkData[this.pageNumber]
+    },
+  },
+  methods: {
+    async initData() {
+      this.pageNumber = 0
+      const data = await this.$api.getRooms()
+      this.chunkData = chunk(data.rooms, 3)
+
+      setTimeout(() => {
+        this.pageNumber = 1
+        setTimeout(() => {
+          this.$store.commit('changePath', 'Holl')
+        }, CHANGE_TIME)
+      }, CHANGE_TIME)
+    },
+  },
   beforeDestroy() {},
 }
 </script>

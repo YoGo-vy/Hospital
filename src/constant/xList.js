@@ -1,10 +1,10 @@
 const imgBaseUrl = 'hospital/static/imgs'
 export const iconMap = {
-  soldier: `${imgBaseUrl}/icon_jun.png`,
-  emergency3: `${imgBaseUrl}/icon_san.png`,
-  emergency4: `${imgBaseUrl}/icon_si.png`,
-  noEmergency: `${imgBaseUrl}/icon_fei.png`,
-  referral: `${imgBaseUrl}/icon_fu.png`,
+  '军属': `${imgBaseUrl}/icon_jun.png`,
+  '急诊1级': `${imgBaseUrl}/icon_san.png`,
+  '急诊2级': `${imgBaseUrl}/icon_si.png`,
+  '急诊3级': `${imgBaseUrl}/icon_fei.png`,
+  '普通': `${imgBaseUrl}/icon_fu.png`,
   missed: `${imgBaseUrl}/icon_guo.png`,
 }
 

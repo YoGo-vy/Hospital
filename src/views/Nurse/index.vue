@@ -38,7 +38,7 @@ export default {
         { disabled: false, isChecked: false, label: '上移', eventKey: 'onMoveUp' },
         { disabled: false, isChecked: false, label: '下移', eventKey: 'onMoveDown' },
         { disabled: false, isChecked: false, label: '删除', eventKey: 'onDelete' },
-        { disabled: false, isChecked: false, label: '转移', eventKey: 'onMove' },
+        { disabled: false, isChecked: false, label: '转诊', eventKey: 'onMove' },
       ],
     }
   },
