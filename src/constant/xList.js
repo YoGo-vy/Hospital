@@ -1,4 +1,4 @@
-const imgBaseUrl = 'hospital/static/imgs'
+const imgBaseUrl = 'static/imgs'
 export const iconMap = {
   '军属': `${imgBaseUrl}/icon_jun.png`,
   '急诊1级': `${imgBaseUrl}/icon_san.png`,

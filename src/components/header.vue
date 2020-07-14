@@ -1,7 +1,7 @@
 <template>
   <div class="holl-top" :style="heightStyle">
     <div class="icon">
-      <img src="hospital/static/imgs/logo.jpg" alt />
+      <img src="static/imgs/logo.jpg" alt />
       <div class="trangle"></div>
     </div>
     <div class="title">

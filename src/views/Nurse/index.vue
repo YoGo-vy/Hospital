@@ -42,11 +42,12 @@ export default {
       timer: -1,
       rooms: [],
       currentRoomId: 1,
+      checkData: [], // 勾选的数据
     }
   },
   created() {
     this.initData()
-    this.timer = setInterval(() => this.initData(), 10 * 1000)
+    // this.timer = setInterval(() => this.initData(), 10 * 1000)
   },
   computed: {
     currentRoom() {
@@ -54,22 +55,30 @@ export default {
     },
   },
   beforeDestroy() {
-    window.clearInterval(this.timer)
+    // window.clearInterval(this.timer)
   },
   methods: {
     async initData() {
       const data = await this.$api.getRooms()
       data.rooms.forEach((room) => {
+        room.patients = [
+          ...room.patients,
+          { patientId: '60006', patientName: '李上校6' },
+          { patientId: '60007', patientName: '李上校7' },
+          { patientId: '60008', patientName: '李上校8' },
+          { patientId: '60009', patientName: '李上校9' },
+        ]
         room.patients.forEach((patient, index) => (patient.number = index + 1))
       })
       this.rooms = data.rooms
     },
+    // option label
     getLabel(item) {
-      // option label
       return `${item.roomName}(${item.patients.length}人)`
     },
-    onSelectionChange() {
-      // CheckBox change
+    // CheckBox change
+    onSelectionChange(val) {
+      this.checkData = val
     },
     onOK() {},
     onCancel() {},
@@ -77,20 +86,29 @@ export default {
       if (!button) return
       this[button.eventKey] && this[button.eventKey]()
     },
+    // 置顶
     onToTop() {
-      // 置顶
+      this.checkData.forEach((item) => (item.number = 0))
+      this.reOrder()
     },
+    // 上移
     onMoveUp() {
-      // 上移
+      this.checkData.forEach((item) => (item.number = item.number - 2)) // 相连勾选的会有bug,暂时不管
+      this.reOrder()
     },
+    // 下移
     onMoveDown() {
-      // 下移
+      this.checkData.forEach((item) => (item.number = item.number + 2)) // 相连勾选的会有bug,暂时不管
+      this.reOrder()
     },
-    onDelete() {
-      // 删除
-    },
-    onMove() {
-      // 转移
+    // 删除
+    onDelete() {},
+    // 转移
+    onMove() {},
+    // 重新排序
+    reOrder() {
+      this.currentRoom.patients = this.currentRoom.patients.sort((itemA, itemB) => itemA.number - itemB.number)
+      this.currentRoom.patients.forEach((item, index) => (item.number = index + 1))
     },
   },
 }

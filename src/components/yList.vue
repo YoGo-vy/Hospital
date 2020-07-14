@@ -2,7 +2,7 @@
   <div class="y-list">
     <div class="y-list-icon center">
       <div class="img-border">
-        <img src="hospital/static/imgs/icon_zhen.png" alt />
+        <img src="static/imgs/icon_zhen.png" alt />
       </div>
     </div>
     <div class="right center">
