@@ -23,13 +23,12 @@ export default {
   },
   computed: mapState(['path']),
   created() {
-    // this.$store.commit('changePath', 'Holl')
   },
   methods: {},
   beforeDestroy() {},
   watch: {
     path(val) {
-      // this.$router.push(val)
+      this.$router.push(val)
     },
   },
 }
