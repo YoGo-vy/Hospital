@@ -85,6 +85,8 @@ export default {
     }
     .room-patients {
       font-size: 0.32rem;
+      white-space: nowrap;
+      overflow: hidden;
       .person {
         display: inline-block;
         width: 1.8rem;

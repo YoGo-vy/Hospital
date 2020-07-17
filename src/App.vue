@@ -29,7 +29,7 @@ export default {
   beforeDestroy() {},
   watch: {
     path(val) {
-      this.$router.push(val)
+      // this.$router.push(val)
     },
   },
 }
@@ -44,6 +44,7 @@ export default {
 .mid-content {
   width: 100%;
   /* height: calc(100% - 60px); */
+  overflow: hidden;
   height: 100%;
 }
 </style>

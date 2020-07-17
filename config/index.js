@@ -6,7 +6,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'), // 编译注入的 index.html 文件,必须是本地的绝对路径
     assetsRoot: path.resolve(__dirname, '../dist'), // 编译输出的静态资源根路径
     assetsSubDirectory: 'static', // 编译输出的二级目录
-    assetsPublicPath: '', // 编译发布上线路径的根目录，可配置为资源服务器域名或 CDN 域名
+    assetsPublicPath: './', // 编译发布上线路径的根目录，可配置为资源服务器域名或 CDN 域名
     productionSourceMap: true, //生成用于生产构建的源映射
     devtool: '#source-map',
 

@@ -2,15 +2,26 @@
   <div class="nurse-page">
     <div class="nurse">
       <div class="body">
+        <div class="top0">
+          <span>急症排队叫号</span>
+        </div>
         <div class="top">
           <el-select v-model="currentRoomId" placeholder="请选择">
             <el-option v-for="item in rooms" :key="item.roomId" :label="getLabel(item)" :value="item.roomId"> </el-option>
           </el-select>
         </div>
         <div class="mid">
-          <el-table v-if="currentRoom && currentRoom.patients" ref="multipleTable" :data="currentRoom.patients" tooltip-effect="dark" style="width: 100%;" @selection-change="onSelectionChange">
-            <el-table-column type="selection" width="55" />
-            <el-table-column label="序号" prop="number" />
+          <el-table
+            v-if="currentRoom && currentRoom.patients"
+            ref="multipleTable"
+            :data="currentRoom.patients"
+            tooltip-effect="dark"
+            highlight-current-row
+            style="width: 100%;"
+            height="100%"
+            @current-change="onSelect"
+          >
+            <el-table-column width="100" label="序号" prop="number" />
             <el-table-column prop="patientName" label="姓名" />
           </el-table>
         </div>
@@ -42,7 +53,7 @@ export default {
       timer: -1,
       rooms: [],
       currentRoomId: 1,
-      checkData: [], // 勾选的数据
+      currentRow: null, // 当前选中的行
     }
   },
   created() {
@@ -61,13 +72,6 @@ export default {
     async initData() {
       const data = await this.$api.getRooms()
       data.rooms.forEach((room) => {
-        room.patients = [
-          ...room.patients,
-          { patientId: '60006', patientName: '李上校6' },
-          { patientId: '60007', patientName: '李上校7' },
-          { patientId: '60008', patientName: '李上校8' },
-          { patientId: '60009', patientName: '李上校9' },
-        ]
         room.patients.forEach((patient, index) => (patient.number = index + 1))
       })
       this.rooms = data.rooms
@@ -77,8 +81,8 @@ export default {
       return `${item.roomName}(${item.patients.length}人)`
     },
     // CheckBox change
-    onSelectionChange(val) {
-      this.checkData = val
+    onSelect(val) {
+      this.currentRow = val
     },
     onOK() {},
     onCancel() {},
@@ -88,17 +92,17 @@ export default {
     },
     // 置顶
     onToTop() {
-      this.checkData.forEach((item) => (item.number = 0))
+      this.currentRow.number = -1
       this.reOrder()
     },
     // 上移
     onMoveUp() {
-      this.checkData.forEach((item) => (item.number = item.number - 2)) // 相连勾选的会有bug,暂时不管
+      this.currentRow.number -= 2
       this.reOrder()
     },
     // 下移
     onMoveDown() {
-      this.checkData.forEach((item) => (item.number = item.number + 2)) // 相连勾选的会有bug,暂时不管
+      this.currentRow.number += 2
       this.reOrder()
     },
     // 删除
@@ -125,24 +129,38 @@ export default {
   align-items: center;
   .nurse {
     width: 4rem;
-    height: 6rem;
+    height: 6.6rem;
     border: 1px solid;
     .body {
       margin: 0.15rem;
       width: calc(100% - 0.3rem);
       height: calc(100% - 0.3rem);
+      .top0 {
+        width: 100%;
+        height: 0.6rem;
+        line-height: 0.6rem;
+        text-align: center;
+        font-size: 0.3rem;
+        font-weight: bold;
+      }
       .top {
         width: 100%;
         height: 0.4rem;
         line-height: 0.4rem;
         font-size: 0.2rem;
-        .red {
-          color: #ff7271;
-        }
       }
       .mid {
-        height: calc(100% - 1.3rem);
+        height: calc(100% - 1.9rem);
         margin-top: 0.1rem;
+        overflow-y: auto;
+        .el-table {
+          .cell {
+            text-align: center;
+          }
+          tr.current-row > td {
+            background-color: rgb(4, 193, 139);
+          }
+        }
       }
       .bottom1 {
         width: 100%;

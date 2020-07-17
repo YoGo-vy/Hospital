@@ -55,7 +55,7 @@ export default {
       this.chunkData = chunk(data.rooms, 3)
 
       setTimeout(() => {
-        this.pageNumber = 1
+        // this.pageNumber = 1
         setTimeout(() => {
           this.$store.commit('changePath', 'Holl')
         }, CHANGE_TIME)

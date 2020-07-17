@@ -46,7 +46,6 @@ export default {
     async initData() {
       const data = await this.$api.getLevels()
       this.chunkData = chunk(data.levels, 4)
-      console.log('>>>>>>>>>>>>>  data levels  >>>>>>>>>>>>>>>>', data.levels)
 
       setTimeout(() => {
         this.pageNumber = 1
