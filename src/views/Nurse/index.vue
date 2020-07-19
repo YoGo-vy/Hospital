@@ -19,20 +19,30 @@
             highlight-current-row
             style="width: 100%;"
             height="100%"
+            stripe
             @current-change="onSelect"
           >
             <el-table-column width="100" label="序号" prop="number" />
-            <el-table-column prop="patientName" label="姓名" />
+            <el-table-column label="姓名">
+              <template slot-scope="scope">
+                <div :class="['patient-name', scope.row.patientId === currentRow.patientId && isShowBtns ? 'text-left' : '']">
+                  <span>{{ scope.row.patientName }}</span>
+                  <span v-if="scope.row.patientId === currentRow.patientId" class="handle-btns">
+                    <span v-if="isShowBtns">
+                      <el-button class="small-btn2" size="mini" type="danger" @click="onMove">删除</el-button>
+                      <el-button class="small-btn2" size="mini" type="success" @click="onDelete">转诊</el-button>
+                    </span>
+                    <i :class="[isShowBtns ? 'el-icon-arrow-right' : 'el-icon-arrow-left']" @click="onShowBtns"></i>
+                  </span>
+                </div>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <div class="bottom1">
-          <el-button class="small-btn" v-for="button in buttons" :key="button.eventKey" :eventKey="button.eventKey" size="small" @click="onClickBtn(button)">
+          <el-button v-for="button in buttons" :key="button.eventKey" :class="['small-btn', button.class]" :eventKey="button.eventKey" size="small" @click="onClickBtn(button)">
             {{ button.label }}
           </el-button>
-        </div>
-        <div class="bottom2">
-          <el-button class="small-btn long-btn green" size="small" @click="onOK"> 确认 </el-button>
-          <el-button class="small-btn long-btn gray" size="small" @click="onCancel"> 取消 </el-button>
         </div>
       </div>
     </div>
@@ -44,16 +54,18 @@ export default {
   data() {
     return {
       buttons: [
-        { disabled: false, isChecked: false, label: '置顶', eventKey: 'onToTop' },
-        { disabled: false, isChecked: false, label: '上移', eventKey: 'onMoveUp' },
-        { disabled: false, isChecked: false, label: '下移', eventKey: 'onMoveDown' },
-        { disabled: false, isChecked: false, label: '删除', eventKey: 'onDelete' },
-        { disabled: false, isChecked: false, label: '转诊', eventKey: 'onMove' },
+        { label: '置顶', class: '', eventKey: 'onToTop' },
+        { label: '上移', class: '', eventKey: 'onMoveUp' },
+        { label: '下移', class: '', eventKey: 'onMoveDown' },
+        { label: '确定', class: 'green', eventKey: 'onOK' },
+        { label: '取消', class: 'gray', eventKey: 'onCancel' },
       ],
       timer: -1,
       rooms: [],
       currentRoomId: 1,
-      currentRow: null, // 当前选中的行
+      currentRow: {}, // 当前选中的行
+      isShowBtns: false,
+      originIds: [],
     }
   },
   created() {
@@ -63,6 +75,10 @@ export default {
   computed: {
     currentRoom() {
       return this.rooms.find(({ roomId }) => roomId === this.currentRoomId)
+    },
+    // 没有选中任何行
+    isNoCurrentRow() {
+      return JSON.stringify(this.currentRow) === '{}'
     },
   },
   beforeDestroy() {
@@ -82,12 +98,19 @@ export default {
     },
     // CheckBox change
     onSelect(val) {
-      this.currentRow = val
+      this.currentRow = val || {}
+      this.isShowBtns = false
+    },
+    onShowBtns() {
+      this.isShowBtns = !this.isShowBtns
     },
     onOK() {},
-    onCancel() {},
+    onCancel() {
+      this.currentRow = {}
+      this.initData()
+    },
     onClickBtn(button) {
-      if (!button) return
+      if (!button || this.isNoCurrentRow) return
       this[button.eventKey] && this[button.eventKey]()
     },
     // 置顶
@@ -150,31 +173,44 @@ export default {
         font-size: 0.2rem;
       }
       .mid {
-        height: calc(100% - 1.9rem);
+        height: calc(100% - 1.5rem);
         margin-top: 0.1rem;
         overflow-y: auto;
         .el-table {
           .cell {
             text-align: center;
           }
+          tr > td {
+            padding: 0;
+          }
+          tr > td > .cell {
+            height: 0.4rem;
+            line-height: 0.4rem;
+          }
           tr.current-row > td {
             background-color: rgb(4, 193, 139);
           }
+        }
+        .patient-name {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          .handle-btns {
+            position: absolute;
+            right: 0;
+          }
+        }
+        .text-left {
+          text-align: left;
         }
       }
       .bottom1 {
         width: 100%;
         height: 0.4rem;
         line-height: 0.4rem;
-      }
-      .bottom2 {
-        width: 100%;
-        height: 0.4rem;
-        line-height: 0.4rem;
         .green {
           background: rgb(4, 193, 139);
           border: none;
-          margin-right: 0.75rem;
         }
         .gray {
           background: rgb(220, 215, 219);
@@ -183,6 +219,10 @@ export default {
       }
       .small-btn {
         padding: 0.08rem 0.2rem;
+        font-size: 0.12rem;
+      }
+      .small-btn2 {
+        padding: 0.06rem 0.2rem;
         font-size: 0.12rem;
       }
       .long-btn {

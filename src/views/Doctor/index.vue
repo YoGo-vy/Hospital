@@ -4,30 +4,31 @@
       <div class="body">
         <div class="title">
           <div class="left">
-            <span>1号诊室</span>
+            <span>{{ roomName }}</span>
           </div>
           <div class="right">
-            <el-switch v-model="isWork"> </el-switch>
-            <!-- <el-button @click="onChangeStatus">停诊</el-button> -->
+            <el-tooltip effect="dark" :content="switchTitle" placement="left">
+              <el-switch v-model="isWork" @change="onChangeRoomState"></el-switch>
+            </el-tooltip>
           </div>
         </div>
         <div class="current">
           <div class="left">
-            <span>当前就诊 : C1 XXX</span>
+            <span>当前就诊 : {{ currentPatient.patientName }}</span>
           </div>
           <div class="right">
-            <span>候诊人数 : 61</span>
+            <span>候诊人数 : {{ patients.length }}</span>
           </div>
         </div>
         <div class="call">
-          <el-button class="call-btn" type="success" @click="onCall">呼叫 C2 C1XXX</el-button>
+          <el-button :disabled="isNoNext" class="call-btn" type="success" @click="onCall">呼叫 {{ nextPatient.patientName }}</el-button>
         </div>
         <div class="pass">
-          <el-button class="small-btn long-btn gray" size="small" @click="onPass">过号</el-button>
-          <el-button class="small-btn long-btn green" size="small" @click="onArrived">到诊</el-button>
+          <el-button :disabled="isNoNext" class="small-btn long-btn gray" size="small" @click="onPass">过号</el-button>
+          <el-button :disabled="isNoNext" class="small-btn long-btn green" size="small" @click="onArrived">到诊</el-button>
         </div>
         <div class="mid">
-          <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" highlight-current-row style="width: 100%;" height="100%">
+          <el-table ref="multipleTable" :data="patients" tooltip-effect="dark" stripe style="width: 100%;" height="100%">
             <el-table-column width="100" label="序号" prop="number" />
             <el-table-column prop="patientName" label="姓名" />
           </el-table>
@@ -38,42 +39,83 @@
 </template>
 
 <script>
+import pick from 'lodash/pick'
+import utils from '@/helper/utils.js'
 export default {
   data() {
     return {
-      tableData: [
-        { patientId: '60006', number: 1, patientName: '马佩煜' },
-        { patientId: '60007', number: 2, patientName: '王新定' },
-        { patientId: '60004', number: 3, patientName: '陈美丽' },
-        { patientId: '60005', number: 4, patientName: '马亚军' },
-        { patientId: '60008', number: 5, patientName: '杜亮' },
-        { patientId: '60009', number: 6, patientName: '王爱' },
-        { patientId: '60010', number: 7, patientName: '朱建华' },
-        { patientId: '60011', number: 8, patientName: '王辉' },
-        { patientId: '60012', number: 9, patientName: '王泽' },
-        { patientId: '60013', number: 10, patientName: '刘明利' },
-        { patientId: '60014', number: 11, patientName: '张亚平' },
-        { patientId: '60015', number: 12, patientName: '刘星语' },
-        { patientId: '60016', number: 13, patientName: '徐忠义' },
-        { patientId: '60017', number: 14, patientName: '王文斌' },
-        { patientId: '60018', number: 15, patientName: '孙俊' },
-        { patientId: '60019', number: 16, patientName: '孙逸馨' },
-        { patientId: '60020', number: 17, patientName: '任军' },
-      ],
+      patients: [],
       isWork: true,
+      roomName: '1号诊室',
+      currentPatient: {}, // 当前就诊
+      roomId: 1,
     }
   },
-  created() {},
-  computed: {},
+  created() {
+    this.roomId = utils.getParamByName('roomId') // url获取当前诊室id
+    this.initData()
+  },
+  computed: {
+    // 下一位
+    nextPatient() {
+      return this.patients[0] || {}
+    },
+    // 没有下一位
+    isNoNext() {
+      return this.patients.length === 0
+    },
+    switchTitle() {
+      return this.isWork ? '开诊状态' : '停诊状态'
+    },
+  },
   methods: {
+    async initData() {
+      const roomData = await this.$api.getRoomPatients(this.roomId) // 病人列表
+      const roomDetail = await this.$api.getRoomDetail(this.roomId) // 详情:当前就诊
+      this.isWork = roomDetail.roomStatus === 1 // 是否开诊
+      this.roomName = roomDetail.roomName
+      this.currentPatient = roomDetail.currentPatient || {}
+      roomData.patients.forEach((item, index) => (item.number = index + 1))
+      this.patients = roomData.patients
+    },
     // 切换就诊状态
-    onChangeStatus() {},
-    // 呼叫
-    onCall() {},
+    onChangeRoomState(val) {
+      this.$api.changeRoomState({
+        roomId: this.roomId,
+        roomStatus: val ? 1 : 0,
+      })
+    },
+    /**
+     * 呼叫下一位
+     * 不刷新数据
+     */
+    async onCall() {
+      if (this.isNoNext) return
+      const requestStatus = 1
+      await this.$api.changePatientState({
+        ...pick(this.nextPatient, ['patientId', 'requestId']),
+        requestStatus,
+      })
+    },
     // 过号
-    onPass() {},
+    onPass() {
+      if (this.isNoNext) return
+      const requestStatus = 3
+      this.changePatientState(requestStatus)
+    },
     // 到诊
-    onArrived() {},
+    onArrived() {
+      if (this.isNoNext) return
+      const requestStatus = 2
+      this.changePatientState(requestStatus)
+    },
+    async changePatientState(requestStatus) {
+      await this.$api.changePatientState({
+        ...pick(this.nextPatient, ['patientId', 'requestId']),
+        requestStatus,
+      })
+      this.initData() // 刷新当前就诊人
+    },
   },
 }
 </script>

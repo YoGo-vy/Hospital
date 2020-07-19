@@ -6,8 +6,13 @@ import Room from '@/views/Room'
 import SignIn from '@/views/SignIn'
 import Nurse from '@/views/Nurse'
 import Doctor from '@/views/Doctor'
+import Index from '@/views/Index'
 
 const routes = [
+  {
+    path: '/',
+    component: Index,
+  },
   {
     path: '/UIDemo',
     component: UIDemo,
