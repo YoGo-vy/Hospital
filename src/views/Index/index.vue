@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-    <div class="link-item"><a href="https://7sugou.cn/hospital/dist/index.html#/Room" target="blank">首页</a></div>
+    <div class="link-item"><a href="https://7sugou.cn/hospital/dist/index.html#/Holl" target="blank">首页</a></div>
     <div class="link-item"><a href="https://7sugou.cn/hospital/dist/index.html#/SignIn" target="blank">签到</a></div>
     <div class="link-item"><a href="https://7sugou.cn/hospital/dist/index.html#/Nurse" target="blank">排队</a></div>
     <div class="link-item"><a href="https://7sugou.cn/hospital/dist/index.html#/Doctor?roomId=1" target="blank">叫号:诊室1</a></div>

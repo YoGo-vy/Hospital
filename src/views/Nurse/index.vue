@@ -40,7 +40,15 @@
           </el-table>
         </div>
         <div class="bottom1">
-          <el-button v-for="button in buttons" :key="button.eventKey" :class="['small-btn', button.class]" :eventKey="button.eventKey" size="small" @click="onClickBtn(button)">
+          <el-button
+            v-for="button in buttons"
+            :disabled="isNoCurrentRow"
+            :key="button.eventKey"
+            :class="['small-btn', button.class]"
+            :eventKey="button.eventKey"
+            size="small"
+            @click="onClickBtn(button)"
+          >
             {{ button.label }}
           </el-button>
         </div>
@@ -50,6 +58,9 @@
 </template>
 
 <script>
+import pick from 'lodash/pick'
+import merge from 'lodash/merge'
+import { REFRESH_TIME } from '@/constant/time.js'
 export default {
   data() {
     return {
@@ -70,7 +81,7 @@ export default {
   },
   created() {
     this.initData()
-    // this.timer = setInterval(() => this.initData(), 10 * 1000)
+    this.timer = setInterval(() => this.initData(true), REFRESH_TIME)
   },
   computed: {
     currentRoom() {
@@ -82,15 +93,16 @@ export default {
     },
   },
   beforeDestroy() {
-    // window.clearInterval(this.timer)
+    window.clearInterval(this.timer)
   },
   methods: {
-    async initData() {
+    async initData(isFromTimer) {
       const data = await this.$api.getRooms()
       data.rooms.forEach((room) => {
         room.patients.forEach((patient, index) => (patient.number = index + 1))
       })
       this.rooms = data.rooms
+      isFromTimer && this.updateCurrent()
     },
     // option label
     getLabel(item) {
@@ -98,13 +110,30 @@ export default {
     },
     // CheckBox change
     onSelect(val) {
-      this.currentRow = val || {}
+      this.currentRow = val || this.currentRow
       this.isShowBtns = false
     },
     onShowBtns() {
       this.isShowBtns = !this.isShowBtns
     },
-    onOK() {},
+    // 更新当前选中,因为刷新数据后选中的对象发生了改变,不能===
+    updateCurrent() {
+      if (this.isNoCurrentRow) return
+      const currentRow = this.currentRoom.patients.find((item) => item.patientId === this.currentRow.patientId)
+      this.currentRoom.patients = this.currentRoom.patients.filter((item) => item !== currentRow)
+      this.currentRoom.patients.splice(this.currentRow.number - 1, 0, currentRow)
+      // 同步order
+      this.currentRoom.patients.forEach((item, number) => (item.number = number + 1))
+      this.$refs.multipleTable.setCurrentRow(currentRow)
+    },
+    async onOK() {
+      await this.$api.changeOrder({
+        ...pick(this.currentRow, ['patientId', 'requestId']),
+        comment: 'la la la la',
+        newOrderIndex: this.currentRoom.patients.indexOf(this.currentRow),
+      })
+      this.onCancel()
+    },
     onCancel() {
       this.currentRow = {}
       this.initData()

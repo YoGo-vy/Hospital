@@ -15,7 +15,7 @@
     <div class="x-list-split">
       <div class="split-line" :style="{ background: splitColors[colorIndex] }"></div>
     </div>
-    <div class="x-list-person">
+    <div class="x-list-person" ref="xListPerson">
       <div class="person-one" v-for="(person, pNumber) in patients" :key="person.patientId">
         <div class="center">
           <div>
@@ -29,6 +29,7 @@
 </template>
 <script>
 import { iconMap, splitColors } from '@/constant/xList.js'
+import { SCROLL_TIME } from '@/constant/time.js'
 
 export default {
   props: {
@@ -51,10 +52,20 @@ export default {
     return {
       iconMap,
       splitColors,
+      timer: -1,
+      scrollX: 0,
     }
   },
   computed: {},
-  created() {},
+  mounted() {
+    this.timer = setInterval(() => {
+      this.scrollX += 1
+      this.$refs.xListPerson.scrollTo(this.scrollX, 0)
+    }, SCROLL_TIME)
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
 }
 </script>
 <style lang="less">

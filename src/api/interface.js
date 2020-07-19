@@ -25,4 +25,8 @@ export default {
   changePatientState(params) {
     return axios.post(`/api/rest/room/patient/state`, params)
   },
+  // 修改病人顺序
+  changeOrder(params) {
+    return axios.post(`/api/rest/patient/room/order`, params)
+  },
 }

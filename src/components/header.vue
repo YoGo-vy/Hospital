@@ -90,7 +90,7 @@ export default {
     .emegency-room {
       position: absolute;
       background: rgb(255, 114, 113);
-      font-size: 0.26rem;
+      font-size: 0.24rem;
       line-height: 0.3rem;
       left: 50%;
       top: 0.85rem;

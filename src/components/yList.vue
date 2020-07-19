@@ -11,7 +11,7 @@
           <span>{{ roomName }}</span>
           <span class="number">[{{ `${patients.length}` }}人]</span>
         </div>
-        <div class="room-patients">
+        <div class="room-patients" ref="roomPatients">
           <div v-for="(person, pNumber) in patients" :key="person.patientId" class="person">
             <span>{{ pNumber + 1 }}</span>
             <span>{{ person.patientName }}</span>
@@ -22,6 +22,8 @@
   </div>
 </template>
 <script>
+import { SCROLL_TIME } from '@/constant/time.js'
+
 export default {
   props: {
     patients: {
@@ -36,10 +38,21 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      timer: -1,
+      scrollX: 0,
+    }
   },
   computed: {},
-  created() {},
+  mounted() {
+    this.timer = setInterval(() => {
+      this.scrollX += 1
+      this.$refs.roomPatients.scrollTo(this.scrollX, 0)
+    }, SCROLL_TIME)
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+  },
 }
 </script>
 <style lang="less">
