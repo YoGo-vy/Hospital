@@ -131,6 +131,13 @@ export default {
       params,
     })
   },
+  delete(url, params = {}) {
+    return $axios({
+      url,
+      method: 'delete',
+      params,
+    })
+  },
   post(url, data = {}) {
     return $axios({
       url,

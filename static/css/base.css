@@ -201,3 +201,8 @@ div::-webkit-scrollbar-track {
   border-radius: 0.08rem;
   background: #ededed;
 }
+
+.small-btn {
+  padding: 0.08rem 0.2rem;
+  font-size: 0.12rem;
+}

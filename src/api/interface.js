@@ -14,6 +14,10 @@ export default {
   getRoomPatients(roomId) {
     return axios.get(`/api/rest/patient/room`, { roomId })
   },
+  // 转诊
+  changePatientRoom(params) {
+    return axios.post(`/api/rest/patient/room`, params)
+  },
   getRoomDetail(roomId) {
     return axios.get(`/api/rest/room`, { roomId })
   },
@@ -28,5 +32,9 @@ export default {
   // 修改病人顺序
   changeOrder(params) {
     return axios.post(`/api/rest/patient/room/order`, params)
+  },
+  // 删除病人
+  deletePatient(requestId) {
+    return axios.delete(`/api/rest/patient/request`, { requestId })
   },
 }

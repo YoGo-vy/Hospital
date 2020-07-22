@@ -25,12 +25,12 @@
             <el-table-column width="100" label="序号" prop="number" />
             <el-table-column label="姓名">
               <template slot-scope="scope">
-                <div :class="['patient-name', scope.row.patientId === currentRow.patientId && isShowBtns ? 'text-left' : '']">
+                <div :class="['patient-name', scope.row.patientId === currentClick.patientId && isShowBtns ? 'text-left' : '']">
                   <span>{{ scope.row.patientName }}</span>
-                  <span v-if="scope.row.patientId === currentRow.patientId" class="handle-btns">
+                  <span v-if="scope.row.patientId === currentClick.patientId" class="handle-btns">
                     <span v-if="isShowBtns">
-                      <el-button class="small-btn2" size="mini" type="danger" @click="onMove">删除</el-button>
-                      <el-button class="small-btn2" size="mini" type="success" @click="onDelete">转诊</el-button>
+                      <el-button class="small-btn2" size="mini" type="danger" @click="onDelete">删除</el-button>
+                      <el-button class="small-btn2" size="mini" type="success" @click="onMove">转诊</el-button>
                     </span>
                     <i :class="[isShowBtns ? 'el-icon-arrow-right' : 'el-icon-arrow-left']" @click="onShowBtns"></i>
                   </span>
@@ -54,29 +54,51 @@
         </div>
       </div>
     </div>
+    <el-dialog :visible.sync="isChangeRoomShow" v-bind="dialog.bind" @close="onMoveCancel">
+      <div class="select-room">
+        <select-span v-for="room in dialogRooms" :key="room.roomId" :room="room" @click="onSelectRoom" />
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="small-btn" @click="onMoveCancel">取 消</el-button>
+        <el-button class="small-btn" type="primary" @click="onMoveOK">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import selectSpan from '@/components/selectSpan'
 import pick from 'lodash/pick'
-import merge from 'lodash/merge'
 import { REFRESH_TIME } from '@/constant/time.js'
 export default {
+  components: {
+    selectSpan,
+  },
   data() {
     return {
       buttons: [
         { label: '置顶', class: '', eventKey: 'onToTop' },
         { label: '上移', class: '', eventKey: 'onMoveUp' },
         { label: '下移', class: '', eventKey: 'onMoveDown' },
-        { label: '确定', class: 'green', eventKey: 'onOK' },
         { label: '取消', class: 'gray', eventKey: 'onCancel' },
+        { label: '确定', class: 'green', eventKey: 'onOK' },
       ],
       timer: -1,
       rooms: [],
-      currentRoomId: 1,
-      currentRow: {}, // 当前选中的行
+      currentRoomId: '1',
+      currentClick: {}, // 当前选中的行
       isShowBtns: false,
       originIds: [],
+      isChangeRoomShow: false,
+      dialog: {
+        bind: {
+          customClass: 'ht-dialog',
+          title: '提示',
+          width: '3.6rem',
+          closeOnClickModal: false,
+        },
+        data: [],
+      },
     }
   },
   created() {
@@ -87,9 +109,12 @@ export default {
     currentRoom() {
       return this.rooms.find(({ roomId }) => roomId === this.currentRoomId)
     },
+    dialogRooms() {
+      return this.dialog.data.filter(({ roomId }) => roomId !== this.currentRoomId)
+    },
     // 没有选中任何行
     isNoCurrentRow() {
-      return JSON.stringify(this.currentRow) === '{}'
+      return JSON.stringify(this.currentClick) === '{}'
     },
   },
   beforeDestroy() {
@@ -102,6 +127,12 @@ export default {
         room.patients.forEach((patient, index) => (patient.number = index + 1))
       })
       this.rooms = data.rooms
+      this.dialog.data = data.rooms.map((room, index) => ({
+        name: room.roomName,
+        isSelect: false,
+        roomId: room.roomId,
+        ref: `selectRoom${index}`,
+      }))
       isFromTimer && this.updateCurrent()
     },
     // option label
@@ -110,7 +141,7 @@ export default {
     },
     // CheckBox change
     onSelect(val) {
-      this.currentRow = val || this.currentRow
+      this.currentClick = val || this.currentClick
       this.isShowBtns = false
     },
     onShowBtns() {
@@ -119,23 +150,23 @@ export default {
     // 更新当前选中,因为刷新数据后选中的对象发生了改变,不能===
     updateCurrent() {
       if (this.isNoCurrentRow) return
-      const currentRow = this.currentRoom.patients.find((item) => item.patientId === this.currentRow.patientId)
-      this.currentRoom.patients = this.currentRoom.patients.filter((item) => item !== currentRow)
-      this.currentRoom.patients.splice(this.currentRow.number - 1, 0, currentRow)
+      const currentClick = this.currentRoom.patients.find((item) => item.patientId === this.currentClick.patientId)
+      this.currentRoom.patients = this.currentRoom.patients.filter((item) => item !== currentClick)
+      this.currentRoom.patients.splice(this.currentClick.number - 1, 0, currentClick)
       // 同步order
       this.currentRoom.patients.forEach((item, number) => (item.number = number + 1))
-      this.$refs.multipleTable.setCurrentRow(currentRow)
+      this.$refs.multipleTable.setCurrentRow(currentClick)
     },
     async onOK() {
       await this.$api.changeOrder({
-        ...pick(this.currentRow, ['patientId', 'requestId']),
+        ...pick(this.currentClick, ['patientId', 'requestId']),
         comment: 'la la la la',
-        newOrderIndex: this.currentRoom.patients.indexOf(this.currentRow),
+        newOrderIndex: this.currentRoom.patients.indexOf(this.currentClick),
       })
       this.onCancel()
     },
     onCancel() {
-      this.currentRow = {}
+      this.currentClick = {}
       this.initData()
     },
     onClickBtn(button) {
@@ -144,23 +175,62 @@ export default {
     },
     // 置顶
     onToTop() {
-      this.currentRow.number = -1
+      this.currentClick.number = -1
       this.reOrder()
     },
     // 上移
     onMoveUp() {
-      this.currentRow.number -= 2
+      this.currentClick.number -= 2
       this.reOrder()
     },
     // 下移
     onMoveDown() {
-      this.currentRow.number += 2
+      this.currentClick.number += 2
       this.reOrder()
     },
     // 删除
-    onDelete() {},
+    onDelete() {
+      this.SimpleUI.confirm({
+        message: `确定删除 ${this.currentClick.patientName} ?`,
+        okFn: async () => {
+          const data = await this.$api.deletePatient(this.currentClick.requestId)
+          this.currentClick = {}
+          this.initData()
+        },
+      })
+    },
     // 转移
-    onMove() {},
+    onMove() {
+      this.isChangeRoomShow = true
+    },
+    // 转移取消
+    onMoveCancel() {
+      this.isChangeRoomShow = false
+    },
+    // 转移校验
+    isCanMove() {
+      return this.dialog.data.some((item) => item.isSelect)
+    },
+    onSelectRoom(room) {
+      this.dialog.data.forEach((item) => (item.isSelect = false))
+      room.isSelect = true
+    },
+    // 转移确定
+    async onMoveOK() {
+      if (!this.isCanMove()) {
+        this.SimpleUI.warning('请选择要转移的诊室')
+        return
+      }
+      const postData = {
+        ...pick(this.currentClick, ['requestId', 'patientId']),
+        newRoomId: this.dialog.data.find((room) => room.isSelect).roomId,
+        comment: 'la la la la',
+      }
+      await this.$api.changePatientRoom(postData)
+      this.currentClick = {}
+      this.initData()
+      this.isChangeRoomShow = false
+    },
     // 重新排序
     reOrder() {
       this.currentRoom.patients = this.currentRoom.patients.sort((itemA, itemB) => itemA.number - itemB.number)
@@ -246,10 +316,6 @@ export default {
           border: none;
         }
       }
-      .small-btn {
-        padding: 0.08rem 0.2rem;
-        font-size: 0.12rem;
-      }
       .small-btn2 {
         padding: 0.06rem 0.2rem;
         font-size: 0.12rem;
@@ -258,6 +324,14 @@ export default {
         padding: 0.08rem 0.58rem;
       }
     }
+  }
+  .select-room {
+    height: 1.3rem;
+    display: flex;
+    align-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0.1rem 0 0 0.1rem;
   }
 }
 </style>
