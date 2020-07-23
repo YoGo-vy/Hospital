@@ -4,14 +4,17 @@
       <my-header v-bind="headerBind" />
       <div class="mid">
         <div class="current xy-center">
-          <div>
-            <span class="name">S1 XXX</span>
+          <div v-if="isDisabled">
+            <span>{{ roomDetail.roomName }}处于停诊状态，请14:00后再签到</span>
+          </div>
+          <div v-else>
+            <span class="name">{{ roomDetail.currentPatient.patientName }}</span>
             <span>正在就诊,请耐心等待</span>
           </div>
         </div>
         <div class="buttons xy-center">
-          <el-button class="btn1" type="primary" @click="onSignIn('referral')">复诊签到</el-button>
-          <el-button type="primary" @click="onSignIn('missed')">过号签到</el-button>
+          <el-button :disabled="isDisabled" class="btn1" type="primary" @click="onSignIn('referral')">复诊签到</el-button>
+          <el-button :disabled="isDisabled" type="primary" @click="onSignIn('missed')">过号签到</el-button>
         </div>
       </div>
     </div>
@@ -20,6 +23,8 @@
 
 <script>
 import myHeader from '@/components/headerSmall'
+import pick from 'lodash/pick'
+import utils from '@/helper/utils.js'
 
 export default {
   components: {
@@ -30,9 +35,27 @@ export default {
       headerBind: {
         name: '1号诊室',
       },
+      roomId: 1,
+      roomDetail: {
+        currentPatient: {},
+      },
     }
   },
+  created() {
+    this.roomId = utils.getParamByName('roomId') // url获取当前诊室id
+    this.initData()
+  },
+  computed: {
+    isDisabled() {
+      return this.roomDetail.roomStatus === 0
+    },
+  },
   methods: {
+    async initData() {
+      this.roomDetail = await this.$api.getRoomDetail(this.roomId) // 详情:当前就诊
+      this.headerBind.name = this.roomDetail.roomName
+      console.log('>>>>>>>>>>>>> roomDetailroomDetail >>>>>>>>>>>>>>>>', this.roomDetail)
+    },
     onSignIn(type) {
       console.log(type)
     },

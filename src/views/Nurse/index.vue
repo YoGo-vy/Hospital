@@ -251,8 +251,8 @@ export default {
   align-items: center;
   .nurse {
     width: 4rem;
-    height: 6.6rem;
-    border: 1px solid;
+    height: 100%;
+    // border: 1px solid;
     .body {
       margin: 0.15rem;
       width: calc(100% - 0.3rem);
