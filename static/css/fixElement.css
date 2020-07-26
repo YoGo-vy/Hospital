@@ -42,6 +42,7 @@
 
 .ht-dialog .el-dialog__title {
   font-size: 16px;
+  color: white;
 }
 
 .ht-dialog .el-dialog__body {
@@ -50,4 +51,31 @@
 
 .ht-dialog .el-icon-close {
   color: white;
+}
+
+.ht-dialog2 .el-dialog__header {
+  padding: 0.12rem 0.3rem 0.12rem 0.1rem;
+  background: #409eff;
+}
+.ht-dialog2 .el-dialog__close {
+  color: white;
+}
+
+.ht-dialog2 .el-dialog__headerbtn {
+  top: 0.05rem;
+  font-size: 0.4rem;
+  right: 0.1rem;
+}
+
+.ht-dialog2 .el-dialog__title {
+  font-size: 0.3rem;
+  color: white;
+}
+
+.ht-dialog2 .el-dialog__body {
+  padding: 0.2rem;
+}
+
+.ht-dialog2 .el-icon-close {
+  color: white !important;
 }

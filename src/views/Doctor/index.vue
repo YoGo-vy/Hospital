@@ -41,6 +41,8 @@
 <script>
 import pick from 'lodash/pick'
 import utils from '@/helper/utils.js'
+import { REFRESH_TIME } from '@/constant/time.js'
+
 export default {
   data() {
     return {
@@ -49,11 +51,18 @@ export default {
       roomName: '1号诊室',
       currentPatient: {}, // 当前就诊
       roomId: 1,
+      timer:-1,
     }
   },
   created() {
     this.roomId = utils.getParamByName('roomId') // url获取当前诊室id
     this.initData()
+  },
+  mounted() {
+    this.timer = setInterval(() => this.initData(), REFRESH_TIME)
+  },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
   },
   computed: {
     // 下一位
@@ -134,7 +143,7 @@ export default {
     height: 100%;
     // border: 1px solid;
     .body {
-      margin: 0.15rem;
+      margin: 0 0.15rem;
       width: calc(100% - 0.3rem);
       height: calc(100% - 0.3rem);
       .title,
@@ -172,7 +181,7 @@ export default {
         }
       }
       .mid {
-        height: calc(100% - 2.1rem);
+        height: calc(100% - 2rem);
         margin-top: 0.1rem;
         overflow-y: auto;
         .el-table {

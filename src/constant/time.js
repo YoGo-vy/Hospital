@@ -2,6 +2,8 @@ export const day = ['星期日', '星期一', '星期二', '星期三', '星期�
 
 export const CHANGE_TIME = 15 * 1000 // 切屏时间间隔
 
-export const REFRESH_TIME = 150 * 1000 // 列表刷新时间
+export const REFRESH_TIME = 15 * 1000 // 列表刷新时间
 
-export const SCROLL_TIME = 10 // 滚动时间间隔
+export const SCROLL_TIME = 20 // 滚动时间间隔
+
+export const CALL_ONE_TIME = 5 * 1000 // 呼叫一个人所花的时间

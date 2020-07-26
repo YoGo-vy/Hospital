@@ -56,7 +56,7 @@
     </div>
     <el-dialog :visible.sync="isChangeRoomShow" v-bind="dialog.bind" @close="onMoveCancel">
       <div class="select-room">
-        <select-span v-for="room in dialogRooms" :key="room.roomId" :room="room" @click="onSelectRoom" />
+        <select-span v-for="room in dialog.data" :key="room.roomId" :room="room" @click="onSelectRoom" />
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="small-btn" @click="onMoveCancel">取 消</el-button>
@@ -103,22 +103,21 @@ export default {
   },
   created() {
     this.initData()
+  },
+  mounted() {
     this.timer = setInterval(() => this.initData(true), REFRESH_TIME)
+  },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
   },
   computed: {
     currentRoom() {
       return this.rooms.find(({ roomId }) => roomId === this.currentRoomId)
     },
-    dialogRooms() {
-      return this.dialog.data.filter(({ roomId }) => roomId !== this.currentRoomId)
-    },
     // 没有选中任何行
     isNoCurrentRow() {
       return JSON.stringify(this.currentClick) === '{}'
     },
-  },
-  beforeDestroy() {
-    window.clearInterval(this.timer)
   },
   methods: {
     async initData(isFromTimer) {
@@ -127,12 +126,6 @@ export default {
         room.patients.forEach((patient, index) => (patient.number = index + 1))
       })
       this.rooms = data.rooms
-      this.dialog.data = data.rooms.map((room, index) => ({
-        name: room.roomName,
-        isSelect: false,
-        roomId: room.roomId,
-        ref: `selectRoom${index}`,
-      }))
       isFromTimer && this.updateCurrent()
     },
     // option label
@@ -200,7 +193,16 @@ export default {
       })
     },
     // 转移
-    onMove() {
+    async onMove() {
+      await this.initData()
+      this.dialog.data = this.rooms
+        .filter(({ roomStatus, roomId }) => roomStatus === 1 && roomId !== this.currentRoomId)
+        .map((room, index) => ({
+          name: room.roomName,
+          isSelect: false,
+          roomId: room.roomId,
+          ref: `selectRoom${index}`,
+        }))
       this.isChangeRoomShow = true
     },
     // 转移取消
@@ -254,7 +256,7 @@ export default {
     height: 100%;
     // border: 1px solid;
     .body {
-      margin: 0.15rem;
+      margin: 0 0.15rem;
       width: calc(100% - 0.3rem);
       height: calc(100% - 0.3rem);
       .top0 {
@@ -272,7 +274,7 @@ export default {
         font-size: 0.2rem;
       }
       .mid {
-        height: calc(100% - 1.5rem);
+        height: calc(100% - 1.2rem);
         margin-top: 0.1rem;
         overflow-y: auto;
         .el-table {

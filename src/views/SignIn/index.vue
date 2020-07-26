@@ -18,6 +18,19 @@
         </div>
       </div>
     </div>
+    <el-dialog :visible.sync="dialog1.isShow" v-bind="dialog1.bind" @close="onDialog1Close">
+      <div class="signin-dialog">
+        <div class="middle" v-if="dialog1.isInput">
+          输入框
+        </div>
+        <div class="middle" v-else>
+          <span>请将条形码放置到下方扫描区域</span>
+        </div>
+        <div class="bottom">
+          <el-button class="small-btn2 change-btn" size="mini" type="primary" @click="onChangeInput">{{ dialog1.isInput ? '扫描输入' : '手动输入' }}</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -25,6 +38,7 @@
 import myHeader from '@/components/headerSmall'
 import pick from 'lodash/pick'
 import utils from '@/helper/utils.js'
+import { REFRESH_TIME } from '@/constant/time.js'
 
 export default {
   components: {
@@ -39,11 +53,28 @@ export default {
       roomDetail: {
         currentPatient: {},
       },
+      timer: -1,
+      dialog1: {
+        bind: {
+          title: '复诊签到',
+          customClass: 'ht-dialog2',
+          width: '6rem',
+          closeOnClickModal: false,
+        },
+        isInput: false, // 手动输入
+        isShow: false,
+      },
     }
   },
   created() {
     this.roomId = utils.getParamByName('roomId') // url获取当前诊室id
     this.initData()
+  },
+  mounted() {
+    this.timer = setInterval(() => this.initData(), REFRESH_TIME)
+  },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
   },
   computed: {
     isDisabled() {
@@ -54,10 +85,15 @@ export default {
     async initData() {
       this.roomDetail = await this.$api.getRoomDetail(this.roomId) // 详情:当前就诊
       this.headerBind.name = this.roomDetail.roomName
-      console.log('>>>>>>>>>>>>> roomDetailroomDetail >>>>>>>>>>>>>>>>', this.roomDetail)
     },
     onSignIn(type) {
-      console.log(type)
+      this.dialog1.isShow = true
+    },
+    onDialog1Close() {
+      this.dialog1.isShow = false
+    },
+    onChangeInput() {
+      this.dialog1.isInput = !this.dialog1.isInput
     },
   },
 }
@@ -95,6 +131,29 @@ export default {
       }
       .btn1 {
         margin-right: 0.6rem;
+      }
+    }
+  }
+  .signin-dialog {
+    height: 2rem;
+    display: flex;
+    flex-direction: column;
+    .middle {
+      flex: 5;
+      display: flex;
+      align-items: center;
+      margin: auto;
+      font-size: 0.36rem;
+      color: black;
+    }
+    .bottom {
+      flex: 2;
+      display: flex;
+      align-items: center;
+      margin: auto;
+      .change-btn {
+        font-size: 0.26rem;
+        padding: 0.12rem 0.3rem;
       }
     }
   }
